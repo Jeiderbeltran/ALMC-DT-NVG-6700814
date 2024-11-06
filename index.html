@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Registro</title>
+    <link rel="stylesheet" href="/CSS/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Usuario</h1>
+        <form id="registrationForm">
+            <!-- Campos generales -->
+             <div class="form-group">
+                <label for="name">Nombre</label>
+                <input type="text" id="nombre" placeholder="Nombre" />
+             </div>
+             <div class="form-group">
+                <label for="lastname">Apellido</label>
+                 <input type="text" id="apellido" placeholder="Apellido" />
+             </div>
+            <div class="form-group">
+                <label for="correo">Correo:</label>
+                <input type="email" id="correo" name="correo" required>
+                <div id="emailError" style="color: red;"></div> <!-- Mensaje de error -->
+            </div>
+            
+            <div class="form-group">
+                <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+                <input type="date" id="fechaNacimiento" name="fechaNacimiento" required>
+                <div id="ageError" style="color: red;"></div> <!-- Mensaje de error -->
+            </div>
+        
+            <div class="form-group">
+                <label for="tipoUsuario">Tipo de Usuario:</label>
+                <select id="tipoUsuario" name="tipoUsuario" required>
+                    <option value="">Seleccione...</option>
+                    <option value="docente">Docente</option>
+                    <option value="estudiante">Estudiante</option>
+                </select>
+            </div>
+            
+            <div id="extraFields"></div>
+        
+            <!-- Intereses (ejemplo) -->
+            <label><input type="checkbox" name="intereses" value="Deporte" /> Deporte</label>
+            <label><input type="checkbox" name="intereses" value="Música" /> Música</label>
+        
+            <button type="submit">Registrar</button>
+        </form>
+        
+        <!-- Tabla para mostrar los usuarios -->
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Correo</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Tipo de Usuario</th>
+                    <th>Intereses</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script type="module" src="/JS/styles.js"></script>
+</body>
+</html>
