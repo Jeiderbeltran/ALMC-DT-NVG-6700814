@@ -1,24 +1,33 @@
-import UserDAO from "./UserDAO.js"
+import UserDAO from "./UserDAO.js";
 
 const userDAO = new UserDAO();
 let editIndex = null;  // Variable para saber si estamos en modo edición
 
-document.getElementById("registrationForm").addEventListener("submit", (event) => {
+// Form submission handler
+document.getElementById("registrationForm").addEventListener("submit", handleSubmit);
+
+// Tipo de usuario selection handler
+document.getElementById("tipoUsuario").addEventListener("change", updateExtraFields);
+
+// Validación de email y edad
+document.getElementById("correo").addEventListener("input", validateEmail);
+document.getElementById("fechaNacimiento").addEventListener("input", validateAge);
+
+function handleSubmit(event) {
     event.preventDefault();
     if (validateForm()) {
         const user = getUserFromForm();
-        if (editIndex !== null) {  // Si estamos editando, actualizar el usuario
+        if (editIndex !== null) {
             userDAO.updateUser(editIndex, user);
-            editIndex = null;  // Resetear el índice de edición
-            document.querySelector("button[type='submit']").textContent = "Registrar";
+            resetEditMode();
         } else {
-            userDAO.addUser(user);  // Si no, crear un nuevo usuario
+            userDAO.addUser(user);
         }
         resetForm();
     }
-});
+}
 
-document.getElementById("tipoUsuario").addEventListener("change", () => {
+function updateExtraFields() {
     const tipoUsuario = document.getElementById("tipoUsuario").value;
     const extraFields = document.getElementById("extraFields");
     extraFields.innerHTML = "";
@@ -46,11 +55,7 @@ document.getElementById("tipoUsuario").addEventListener("change", () => {
             </div>
         `;
     }
-});
-
-// Validación de email y edad
-document.getElementById("correo").addEventListener("input", validateEmail);
-document.getElementById("fechaNacimiento").addEventListener("input", validateAge);
+}
 
 function validateEmail() {
     const emailInput = document.getElementById("correo");
@@ -128,47 +133,24 @@ function getUserFromForm() {
         };
     }
 
-    return { nombre, apellido, correo, fechaNacimiento, tipoUsuario, intereses, ...extraData };
+    return {
+        nombre,
+        apellido,
+        correo,
+        fechaNacimiento,
+        tipoUsuario,
+        intereses,
+        ...extraData
+    };
 }
 
 function resetForm() {
     document.getElementById("registrationForm").reset();
     document.getElementById("extraFields").innerHTML = "";
-    document.querySelectorAll('input[name="intereses"]').forEach(input => input.checked = false);  // Limpiar los checkboxes
-    document.getElementById("emailError").textContent = ""; // Limpiar mensaje de error
-    document.getElementById("ageError").textContent = ""; // Limpiar mensaje de error
+    editIndex = null;
 }
 
-window.editUser = function(index) {
-    const user = userDAO.users[index];
-    document.getElementById("nombre").value = user.nombre;
-    document.getElementById("apellido").value = user.apellido;
-    document.getElementById("correo").value = user.correo;
-    document.getElementById("fechaNacimiento").value = user.fechaNacimiento;
-    document.getElementById("tipoUsuario").value = user.tipoUsuario;
-
-    // Mostrar los campos adicionales correspondientes
-    document.getElementById("tipoUsuario").dispatchEvent(new Event("change"));
-
-    // Completar los campos adicionales
-    if (user.tipoUsuario === "docente") {
-        document.getElementById("profesion").value = user.profesion;
-        document.getElementById("experiencia").value = user.experiencia;
-    } else if (user.tipoUsuario === "estudiante") {
-        document.getElementById("codigo").value = user.codigo;
-        document.getElementById("programa").value = user.programa;
-    }
-
-    // Seleccionar los intereses del usuario
-    document.querySelectorAll('input[name="intereses"]').forEach(input => {
-        input.checked = user.intereses.includes(input.value);
-    });
-
-    // Cambiar el botón a "Actualizar" y setear editIndex
-    document.querySelector("button[type='submit']").textContent = "Actualizar";
-    editIndex = index;
-};
-
-window.deleteUser = function(index) {
-    userDAO.deleteUser(index);
-};
+function resetEditMode() {
+    editIndex = null;
+    resetForm();
+}
