@@ -12,7 +12,15 @@ export default class UserDAO {
     // Agregar o actualizar un usuario
     addUser(user) {
         if (this.editIndex !== null) {  // Si `editIndex` tiene un valor, estamos en modo de edición
-            this.updateUser(this.editIndex, user);
+            // Reemplazar el usuario en el índice correspondiente
+            this.users[this.editIndex] = {
+                nombre: document.getElementById("nombre").value,
+                apellido: document.getElementById("apellido").value,
+                correo: document.getElementById("correo").value,
+                fechaNacimiento: document.getElementById("fechaNacimiento").value,
+                tipoUsuario: document.getElementById("tipoUsuario").value,
+                intereses: Array.from(document.querySelectorAll("input[name='intereses']:checked")).map(checkbox => checkbox.value)
+            };
             this.editIndex = null; // Restablecemos `editIndex` después de la actualización
         } else {
             // De lo contrario, agregamos un nuevo usuario
@@ -42,7 +50,7 @@ export default class UserDAO {
 
     // Guardar los usuarios en las cookies con una expiración de 60 segundos
     updateCookie() {
-        CookieManager.setCookie("users", JSON.stringify(this.users), 60);
+        CookieManager.setCookie("users", JSON.stringify(this.users), 120);
     }
 
     // Guardar los datos del formulario temporalmente en la cookie
